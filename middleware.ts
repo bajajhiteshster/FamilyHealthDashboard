@@ -9,7 +9,9 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return request.cookies.getAll() },
+        getAll() {
+          return request.cookies.getAll()
+        },
         setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
@@ -21,18 +23,13 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh session token
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Only protect /dashboard — redirect to /auth if not logged in
   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth'
     return NextResponse.redirect(url)
   }
-
-  // Do NOT auto-redirect /auth -> /dashboard here.
-  // Avoids race condition where cookie isn't readable yet server-side.
 
   return supabaseResponse
 }

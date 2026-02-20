@@ -24,8 +24,9 @@ export default function AuthPage() {
         })
         if (error) throw error
         if (!data.session) {
-          setError('Check your email to confirm your account.')
+          setError('Account created! Please sign in.')
           setLoading(false)
+          setMode('login')
           return
         }
       } else {
@@ -34,9 +35,13 @@ export default function AuthPage() {
         if (!data.session) throw new Error('No session returned')
       }
 
-      // Give browser time to write the cookie, then hard-navigate
-      await new Promise(r => setTimeout(r, 500))
-      window.location.replace('/dashboard')
+      // Verify session exists client-side before redirecting
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Session not established')
+
+      // Hard navigate — full page reload so server reads fresh cookies
+      await new Promise(r => setTimeout(r, 300))
+      window.location.href = '/dashboard'
 
     } catch (err: any) {
       setError(err.message || 'Something went wrong')
