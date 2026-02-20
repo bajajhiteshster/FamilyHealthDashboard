@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
 import { createClient } from '@/lib/supabase/server'
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 export async function POST(req: NextRequest) {
   // Auth check
@@ -34,20 +31,36 @@ Return ONLY a valid JSON object with these exact keys (use null if not found):
 }
 Numeric values only. No units, no text. Just the JSON.`
 
-  const message = await anthropic.messages.create({
-    model: 'claude-opus-4-6',
-    max_tokens: 1024,
-    system: systemPrompt,
-    messages: [{
-      role: 'user',
-      content: [
-        { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } },
-        { type: 'text', text: `Extract blood test values from: ${filename}` }
-      ]
-    }]
+  // Use fetch directly to avoid SDK type limitations with document blocks
+  const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY!,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-6',
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } },
+          { type: 'text', text: `Extract blood test values from: ${filename}` }
+        ]
+      }]
+    })
   })
 
-  const text = message.content.map((c: any) => c.text || '').join('')
+  if (!anthropicRes.ok) {
+    const err = await anthropicRes.text()
+    return NextResponse.json({ error: `Anthropic API error: ${err}` }, { status: 500 })
+  }
+
+  const message = await anthropicRes.json()
+
+  const text = (message.content as any[]).map((c: any) => c.text || '').join('')
   const clean = text.replace(/```json|```/g, '').trim()
   const parsed = JSON.parse(clean)
 
