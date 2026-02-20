@@ -12,8 +12,9 @@ type Props = {
 const CustomTooltip = ({ active, payload, label, paramKey }: any) => {
   if (!active || !payload?.length) return null
   const value = payload[0]?.value
-  const status = getStatus(paramKey, value)
-  const p = PARAMETERS[paramKey]
+  const key = paramKey as ParamKey
+  const status = getStatus(key, value)
+  const p = PARAMETERS[key]
   return (
     <div style={{ background: '#0a0f1e', border: `1px solid ${p.color}40`, borderRadius: 9, padding: '10px 14px', fontSize: 13 }}>
       <div style={{ color: '#64748b', fontSize: 11, marginBottom: 3 }}>{label}</div>
