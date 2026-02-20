@@ -42,26 +42,13 @@ export default function DashboardClient({ user, initialReports }: Props) {
   const processFiles = useCallback(async (files: File[]) => {
     setUploading(true)
     const logs: any[] = []
-
-    const systemPrompt = `You are a medical data extraction specialist. Extract blood test results from the PDF.
-Return ONLY a valid JSON object with these exact keys (use null if not found):
-{
-  "report_date": "YYYY-MM",
-  "hba1c": number, "glucose": number, "triglycerides": number,
-  "hdl": number, "ldl": number, "total_cholesterol": number,
-  "hemoglobin": number, "creatinine": number, "tsh": number,
-  "vitamin_d": number, "wbc": number, "platelets": number,
-  "uric_acid": number, "alt": number, "ast": number
-}
-Numeric values only. No units, no text. Just the JSON.`
-
     for (const file of files) {
       if (!file.name.endsWith('.pdf')) {
         logs.push({ name: file.name, status: 'error', msg: 'Not a PDF' })
         setUploadLog([...logs])
         continue
       }
-      logs.push({ name: file.name, status: 'processing', msg: 'Sending to Claude AI…' })
+      logs.push({ name: file.name, status: 'processing', msg: 'Extracting with Claude AI…' })
       setUploadLog([...logs])
       try {
         const base64 = await new Promise<string>((res, rej) => {
@@ -70,52 +57,13 @@ Numeric values only. No units, no text. Just the JSON.`
           r.onerror = () => rej(new Error('Read failed'))
           r.readAsDataURL(file)
         })
-
-        // Call Anthropic directly from browser — bypasses Vercel 4.5MB payload limit
-        const aiResp = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY!,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-request-allowlist': 'allow-all',
-          },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-6',
-            max_tokens: 1024,
-            system: systemPrompt,
-            messages: [{
-              role: 'user',
-              content: [
-                { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } },
-                { type: 'text', text: `Extract blood test values from: ${file.name}` }
-              ]
-            }]
-          })
-        })
-
-        if (!aiResp.ok) throw new Error(`AI error: ${await aiResp.text()}`)
-        const aiData = await aiResp.json()
-        const text = aiData.content.map((c: any) => c.text || '').join('')
-        const clean = text.replace(/```json|```/g, '').trim()
-        const parsed = JSON.parse(clean)
-
-        // Strip nulls, build report
-        const reportData: any = { source: 'pdf', filename: file.name }
-        for (const [k, v] of Object.entries(parsed)) {
-          if (v !== null && v !== undefined) reportData[k] = v
-        }
-        if (!reportData.report_date) reportData.report_date = new Date().toISOString().slice(0, 7)
-
-        // Save only the tiny JSON to Supabase via API route
-        const saveResp = await fetch('/api/extract', {
+        const resp = await fetch('/api/extract', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reportData })
+          body: JSON.stringify({ base64, filename: file.name })
         })
-        if (!saveResp.ok) throw new Error(await saveResp.text())
-        const { report } = await saveResp.json()
-
+        if (!resp.ok) throw new Error(await resp.text())
+        const { report } = await resp.json()
         setReports(prev => [...prev, report].sort((a, b) => a.report_date.localeCompare(b.report_date)))
         logs[logs.length - 1] = { name: file.name, status: 'success', msg: `Extracted · ${report.report_date}` }
       } catch (e: any) {
