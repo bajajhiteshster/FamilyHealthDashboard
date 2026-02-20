@@ -1,16 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// Tell Vercel to allow up to 20MB payload for this route
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '20mb',
-    },
-  },
-}
-
-// Vercel Edge/Node max duration
 export const maxDuration = 60
 
 export async function POST(req: NextRequest) {
@@ -18,21 +8,21 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body = await req.json()
+  const { storagePath, filename } = await req.json()
+  if (!storagePath) return NextResponse.json({ error: 'No file path' }, { status: 400 })
 
-  // Handle both flows: pre-extracted data OR raw PDF base64
-  if (body.reportData) {
-    // Client already extracted — just save to DB
-    const record = { ...body.reportData, user_id: user.id }
-    if (!record.report_date) record.report_date = new Date().toISOString().slice(0, 7)
-    const { data, error } = await supabase.from('reports').insert(record).select().single()
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-    return NextResponse.json({ report: data })
+  // Download PDF from Supabase Storage server-side (no payload limit)
+  const { data: fileData, error: downloadError } = await supabase.storage
+    .from('reports')
+    .download(storagePath)
+
+  if (downloadError || !fileData) {
+    return NextResponse.json({ error: `Download failed: ${downloadError?.message}` }, { status: 500 })
   }
 
-  // Full flow: receive PDF base64, call Anthropic server-side, save result
-  const { base64, filename } = body
-  if (!base64) return NextResponse.json({ error: 'No data provided' }, { status: 400 })
+  // Convert blob to base64
+  const arrayBuffer = await fileData.arrayBuffer()
+  const base64 = Buffer.from(arrayBuffer).toString('base64')
 
   const systemPrompt = `You are a medical data extraction specialist. Extract blood test results from the PDF.
 Return ONLY a valid JSON object with these exact keys (use null if not found):
@@ -69,6 +59,8 @@ Numeric values only. No units, no text. Just the JSON.`
 
   if (!anthropicRes.ok) {
     const err = await anthropicRes.text()
+    // Clean up uploaded file on failure
+    await supabase.storage.from('reports').remove([storagePath])
     return NextResponse.json({ error: `Anthropic API error: ${err}` }, { status: 500 })
   }
 
@@ -77,14 +69,19 @@ Numeric values only. No units, no text. Just the JSON.`
   const clean = text.replace(/```json|```/g, '').trim()
   const parsed = JSON.parse(clean)
 
+  // Build report, strip nulls
   const report: any = { user_id: user.id, source: 'pdf', filename }
   for (const [k, v] of Object.entries(parsed)) {
     if (v !== null && v !== undefined) report[k] = v
   }
   if (!report.report_date) report.report_date = new Date().toISOString().slice(0, 7)
 
+  // Save to DB
   const { data, error } = await supabase.from('reports').insert(report).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Clean up PDF from storage (we only needed it for extraction)
+  await supabase.storage.from('reports').remove([storagePath])
 
   return NextResponse.json({ report: data })
 }

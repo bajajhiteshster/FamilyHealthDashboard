@@ -53,3 +53,16 @@ create policy "Users manage own reports" on public.reports for all using (auth.u
 
 -- Indexes
 create index on public.reports(user_id, report_date);
+
+-- Storage bucket for PDF reports
+insert into storage.buckets (id, name, public) values ('reports', 'reports', false);
+
+-- Only authenticated users can upload/read their own files
+create policy "Users upload own PDFs" on storage.objects
+  for insert with check (bucket_id = 'reports' and auth.uid()::text = (storage.foldername(name))[1]);
+
+create policy "Users read own PDFs" on storage.objects
+  for select using (bucket_id = 'reports' and auth.uid()::text = (storage.foldername(name))[1]);
+
+create policy "Users delete own PDFs" on storage.objects
+  for delete using (bucket_id = 'reports' and auth.uid()::text = (storage.foldername(name))[1]);

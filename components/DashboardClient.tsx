@@ -48,19 +48,24 @@ export default function DashboardClient({ user, initialReports }: Props) {
         setUploadLog([...logs])
         continue
       }
-      logs.push({ name: file.name, status: 'processing', msg: 'Extracting with Claude AI…' })
+      logs.push({ name: file.name, status: 'processing', msg: 'Uploading PDF…' })
       setUploadLog([...logs])
       try {
-        const base64 = await new Promise<string>((res, rej) => {
-          const r = new FileReader()
-          r.onload = () => res((r.result as string).split(',')[1])
-          r.onerror = () => rej(new Error('Read failed'))
-          r.readAsDataURL(file)
-        })
+        // Step 1: Upload PDF to Supabase Storage (no Vercel payload limit!)
+        const storagePath = `${user.id}/${Date.now()}_${file.name}`
+        const { error: uploadError } = await supabase.storage
+          .from('reports')
+          .upload(storagePath, file, { contentType: 'application/pdf' })
+        if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`)
+
+        // Step 2: Tell server to extract from storage (only tiny JSON goes through Vercel)
+        logs[logs.length - 1] = { name: file.name, status: 'processing', msg: 'Extracting with Claude AI…' }
+        setUploadLog([...logs])
+
         const resp = await fetch('/api/extract', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ base64, filename: file.name })
+          body: JSON.stringify({ storagePath, filename: file.name })
         })
         if (!resp.ok) throw new Error(await resp.text())
         const { report } = await resp.json()
@@ -72,7 +77,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
       setUploadLog([...logs])
     }
     setUploading(false)
-  }, [])
+  }, [user.id, supabase])
 
   const saveManual = async () => {
     if (!newEntry.report_date) return
