@@ -111,7 +111,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#06090f', color: '#e2e8f0', fontFamily: "'Sora','Segoe UI',sans-serif" }}>
+    <div style={{ minHeight: '100vh', background: '#06090f', color: '#e2e8f0', fontFamily: "'Sora','Segoe UI',sans-serif", position: 'relative', isolation: 'auto' }}>
       {/* Nav */}
       <nav style={{ background: 'rgba(6,9,15,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #0a0f1e', padding: '0 32px', position: 'sticky', top: 0, zIndex: 50 }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
@@ -329,7 +329,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
           For personal tracking only. Consult your doctor for medical advice.
         </p>
       </div>
-		<QuickReadings userId={user.id} />
+      <QuickReadings userId={user.id} />
     </div>
   )
 }

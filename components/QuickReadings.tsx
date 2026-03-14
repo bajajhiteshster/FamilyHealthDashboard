@@ -136,20 +136,22 @@ export default function QuickReadings({ userId }: Props) {
     <>
       {/* Floating Button */}
       <button onClick={() => setOpen(true)} style={{
-        position: 'fixed', bottom: 'max(28px, env(safe-area-inset-bottom, 28px))', right: 24, zIndex: 100,
-        width: 56, height: 56, borderRadius: '50%', border: 'none',
+        position: 'fixed', bottom: 24, right: 24, zIndex: 9999,
+        width: 60, height: 60, borderRadius: '50%', border: 'none',
         background: 'linear-gradient(135deg, #dc2626, #db2777)',
-        color: 'white', fontSize: 26, cursor: 'pointer',
-        boxShadow: '0 4px 24px rgba(220,38,38,0.5)',
+        color: 'white', fontSize: 30, cursor: 'pointer',
+        boxShadow: '0 4px 24px rgba(220,38,38,0.6)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        transition: 'transform 0.2s',
+        WebkitTransform: 'translateZ(0)',
+        transform: 'translateZ(0)',
+        willChange: 'transform',
       }} title="Add Quick Reading">
-        ＋
+        +
       </button>
 
       {/* Drawer Overlay */}
       {open && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 10000, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
           {/* Backdrop */}
           <div onClick={() => { setOpen(false); setShowForm(false) }} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} />
 
