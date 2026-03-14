@@ -329,6 +329,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
           For personal tracking only. Consult your doctor for medical advice.
         </p>
       </div>
+		<QuickReadings userId={user.id} />
     </div>
   )
 }
