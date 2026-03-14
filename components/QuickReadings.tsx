@@ -124,8 +124,8 @@ export default function QuickReadings({ userId }: Props) {
   }
 
   const s = {
-    inp: { width: '100%', background: '#060810', border: '1px solid #1e293b', borderRadius: 8, padding: '9px 12px', color: '#f1f5f9', fontSize: 14, boxSizing: 'border-box' } as React.CSSProperties,
-    lbl: { display: 'block', fontSize: 11, color: '#475569', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' } as React.CSSProperties,
+    inp: { width: '100%', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8, padding: '9px 12px', color: '#0f172a', fontSize: 14, boxSizing: 'border-box' } as React.CSSProperties,
+    lbl: { display: 'block', fontSize: 11, color: '#64748b', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' } as React.CSSProperties,
   }
 
   const latestBp     = bpData[bpData.length - 1]
@@ -168,19 +168,19 @@ export default function QuickReadings({ userId }: Props) {
           <div onClick={() => { setOpen(false); setShowForm(false) }} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} />
 
           {/* Drawer */}
-          <div style={{ position: 'relative', width: '100%', maxWidth: 520, minHeight: '60vh', maxHeight: '100vh', background: '#0a0f1e', borderLeft: '1px solid #1e293b', borderTop: '1px solid #1e293b', borderRadius: '16px 0 0 0', overflowY: 'auto', padding: '20px 20px 40px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div style={{ position: 'relative', width: '100%', maxWidth: 520, minHeight: '60vh', maxHeight: '100vh', background: '#ffffff', borderLeft: '1px solid #e2e8f0', borderTop: '1px solid #e2e8f0', borderRadius: '16px 0 0 0', overflowY: 'auto', padding: '20px 20px 40px', display: 'flex', flexDirection: 'column', gap: 18 }}>
 
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: '#f1f5f9' }}>Quick Readings</h2>
-                <p style={{ margin: '3px 0 0', fontSize: 12, color: '#475569' }}>Blood sugar, pressure & weight</p>
+                <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: '#0f172a' }}>Quick Readings</h2>
+                <p style={{ margin: '3px 0 0', fontSize: 12, color: '#64748b' }}>Blood sugar, pressure & weight</p>
               </div>
-              <button onClick={() => { setOpen(false); setShowForm(false) }} style={{ background: '#1e293b', border: 'none', color: '#94a3b8', width: 34, height: 34, borderRadius: 8, cursor: 'pointer', fontSize: 18 }}>✕</button>
+              <button onClick={() => { setOpen(false); setShowForm(false) }} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#64748b', width: 34, height: 34, borderRadius: 8, cursor: 'pointer', fontSize: 18 }}>✕</button>
             </div>
 
             {/* Tab Switcher */}
-            <div style={{ display: 'flex', background: '#060810', borderRadius: 10, padding: 3, gap: 2 }}>
+            <div style={{ display: 'flex', background: '#f8fafc', borderRadius: 10, padding: 3, gap: 2 }}>
               {([['bp', '🫀 BP'], ['sugar', '🩸 Sugar'], ['weight', '⚖️ Weight']] as const).map(([t, label]) => (
                 <button key={t} onClick={() => { setTab(t); setShowForm(false) }} style={{
                   flex: 1, padding: '8px 4px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
@@ -191,7 +191,7 @@ export default function QuickReadings({ userId }: Props) {
             </div>
 
             {loading ? (
-              <div style={{ textAlign: 'center', color: '#334155', padding: 40 }}>Loading…</div>
+              <div style={{ textAlign: 'center', color: '#94a3b8', padding: 40 }}>Loading…</div>
             ) : (
               <>
                 {/* ── BLOOD PRESSURE ── */}
@@ -201,16 +201,16 @@ export default function QuickReadings({ userId }: Props) {
                     {latestBp && (() => {
                       const st = getBpStatus(latestBp.systolic, latestBp.diastolic)
                       return (
-                        <div style={{ background: '#060810', borderRadius: 14, padding: '18px 20px', border: `1px solid ${st.color}30` }}>
+                        <div style={{ background: '#f8fafc', borderRadius: 14, padding: '18px 20px', border: `1.5px solid ${st.color}30` }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                              <div style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Latest Reading</div>
+                              <div style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Latest Reading</div>
                               <div style={{ fontSize: 32, fontWeight: 800, color: st.color, letterSpacing: '-1px' }}>{latestBp.systolic}<span style={{ fontSize: 18, color: '#475569' }}>/{latestBp.diastolic}</span></div>
-                              <div style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>mmHg {latestBp.pulse ? `· ${latestBp.pulse} bpm` : ''}</div>
+                              <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>mmHg {latestBp.pulse ? `· ${latestBp.pulse} bpm` : ''}</div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
                               <span style={{ background: st.color + '20', color: st.color, padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 700 }}>{st.label}</span>
-                              <div style={{ fontSize: 11, color: '#334155', marginTop: 6 }}>{fmt(latestBp.recorded_at)}</div>
+                              <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 6 }}>{fmt(latestBp.recorded_at)}</div>
                             </div>
                           </div>
                         </div>
@@ -219,14 +219,14 @@ export default function QuickReadings({ userId }: Props) {
 
                     {/* Chart */}
                     {bpData.length > 1 && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '16px 18px' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', marginBottom: 12 }}>Trend</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '16px 18px' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#64748b', marginBottom: 12 }}>Trend</div>
                         <ResponsiveContainer width="100%" height={160}>
                           <LineChart data={bpData.map(r => ({ ...r, date: fmt(r.recorded_at) }))} margin={{ top: 4, right: 8, left: -28, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#0f172a" />
                             <XAxis dataKey="date" tick={{ fill: '#334155', fontSize: 10 }} />
                             <YAxis tick={{ fill: '#334155', fontSize: 10 }} domain={['auto', 'auto']} />
-                            <Tooltip contentStyle={{ background: '#0a0f1e', border: '1px solid #1e293b', borderRadius: 8, fontSize: 12 }} />
+                            <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                             <ReferenceLine y={120} stroke="#22c55e" strokeDasharray="4 3" strokeOpacity={0.4} />
                             <ReferenceLine y={80} stroke="#22c55e" strokeDasharray="4 3" strokeOpacity={0.3} />
                             <Line type="monotone" dataKey="systolic" stroke="#ef4444" strokeWidth={2.5} dot={{ r: 3, fill: '#ef4444', strokeWidth: 0 }} name="Systolic" />
@@ -242,20 +242,20 @@ export default function QuickReadings({ userId }: Props) {
 
                     {/* History */}
                     {bpData.length > 0 && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '16px 18px' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', marginBottom: 10 }}>History</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '16px 18px' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#64748b', marginBottom: 10 }}>History</div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                           {[...bpData].reverse().slice(0, 10).map(r => {
                             const st = getBpStatus(r.systolic, r.diastolic)
                             return (
-                              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: '#0a0f1e', borderRadius: 8 }}>
+                              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: '#ffffff', borderRadius: 8, border: '1px solid #f1f5f9' }}>
                                 <div>
                                   <span style={{ color: st.color, fontWeight: 700, fontSize: 15 }}>{r.systolic}/{r.diastolic}</span>
                                   <span style={{ color: '#475569', fontSize: 12, marginLeft: 8 }}>mmHg {r.pulse ? `· ${r.pulse} bpm` : ''}</span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                  <span style={{ fontSize: 11, color: '#334155' }}>{fmtFull(r.recorded_at)}</span>
-                                  <button onClick={() => deleteReading('blood_pressure', r.id)} style={{ background: 'none', border: 'none', color: '#334155', cursor: 'pointer', fontSize: 14 }}>🗑</button>
+                                  <span style={{ fontSize: 11, color: '#94a3b8' }}>{fmtFull(r.recorded_at)}</span>
+                                  <button onClick={() => deleteReading('blood_pressure', r.id)} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', fontSize: 14 }}>🗑</button>
                                 </div>
                               </div>
                             )
@@ -266,8 +266,8 @@ export default function QuickReadings({ userId }: Props) {
 
                     {/* Add Form */}
                     {showForm && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '18px 20px', border: '1px solid #1e293b' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9', marginBottom: 14 }}>Add Reading</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '18px 20px', border: '1px solid #1e293b' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 14 }}>Add Reading</div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
                           <div><label style={s.lbl}>Systolic (mmHg)</label><input style={s.inp} type="number" placeholder="120" value={bpForm.systolic} onChange={e => setBpForm(p => ({ ...p, systolic: e.target.value }))} /></div>
                           <div><label style={s.lbl}>Diastolic (mmHg)</label><input style={s.inp} type="number" placeholder="80" value={bpForm.diastolic} onChange={e => setBpForm(p => ({ ...p, diastolic: e.target.value }))} /></div>
@@ -277,7 +277,7 @@ export default function QuickReadings({ userId }: Props) {
                         <div style={{ marginBottom: 14 }}><label style={s.lbl}>Notes (optional)</label><input style={s.inp} placeholder="After exercise, stressed…" value={bpForm.notes} onChange={e => setBpForm(p => ({ ...p, notes: e.target.value }))} /></div>
                         <div style={{ display: 'flex', gap: 8 }}>
                           <button onClick={saveReading} disabled={saving} style={{ background: 'linear-gradient(135deg,#dc2626,#db2777)', border: 'none', color: 'white', padding: '9px 20px', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>{saving ? 'Saving…' : 'Save'}</button>
-                          <button onClick={() => setShowForm(false)} style={{ background: '#1e293b', border: 'none', color: '#64748b', padding: '9px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
+                          <button onClick={() => setShowForm(false)} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#64748b', padding: '9px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
                         </div>
                       </div>
                     )}
@@ -290,15 +290,15 @@ export default function QuickReadings({ userId }: Props) {
                     {latestSugar && (() => {
                       const st = getSugarStatus(latestSugar.value, latestSugar.type)
                       return (
-                        <div style={{ background: '#060810', borderRadius: 14, padding: '18px 20px', border: `1px solid ${st.color}30` }}>
+                        <div style={{ background: '#f8fafc', borderRadius: 14, padding: '18px 20px', border: `1.5px solid ${st.color}30` }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                              <div style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Latest · {latestSugar.type.replace('_', ' ')}</div>
+                              <div style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Latest · {latestSugar.type.replace('_', ' ')}</div>
                               <div style={{ fontSize: 32, fontWeight: 800, color: st.color }}>{latestSugar.value} <span style={{ fontSize: 14, color: '#475569', fontWeight: 400 }}>mg/dL</span></div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
                               <span style={{ background: st.color + '20', color: st.color, padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 700 }}>{st.label}</span>
-                              <div style={{ fontSize: 11, color: '#334155', marginTop: 6 }}>{fmt(latestSugar.recorded_at)}</div>
+                              <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 6 }}>{fmt(latestSugar.recorded_at)}</div>
                             </div>
                           </div>
                         </div>
@@ -306,14 +306,14 @@ export default function QuickReadings({ userId }: Props) {
                     })()}
 
                     {sugarData.length > 1 && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '16px 18px' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', marginBottom: 12 }}>Trend</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '16px 18px' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#64748b', marginBottom: 12 }}>Trend</div>
                         <ResponsiveContainer width="100%" height={150}>
                           <LineChart data={sugarData.map(r => ({ ...r, date: fmt(r.recorded_at) }))} margin={{ top: 4, right: 8, left: -28, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#0f172a" />
                             <XAxis dataKey="date" tick={{ fill: '#334155', fontSize: 10 }} />
                             <YAxis tick={{ fill: '#334155', fontSize: 10 }} />
-                            <Tooltip contentStyle={{ background: '#0a0f1e', border: '1px solid #1e293b', borderRadius: 8, fontSize: 12 }} />
+                            <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                             <ReferenceLine y={100} stroke="#22c55e" strokeDasharray="4 3" strokeOpacity={0.4} label={{ value: 'Normal', fill: '#22c55e', fontSize: 10 }} />
                             <ReferenceLine y={126} stroke="#ef4444" strokeDasharray="4 3" strokeOpacity={0.3} />
                             <Line type="monotone" dataKey="value" stroke="#f97316" strokeWidth={2.5} dot={{ r: 3, fill: '#f97316', strokeWidth: 0 }} name="Blood Sugar" />
@@ -323,20 +323,20 @@ export default function QuickReadings({ userId }: Props) {
                     )}
 
                     {sugarData.length > 0 && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '16px 18px' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', marginBottom: 10 }}>History</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '16px 18px' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#64748b', marginBottom: 10 }}>History</div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                           {[...sugarData].reverse().slice(0, 10).map(r => {
                             const st = getSugarStatus(r.value, r.type)
                             return (
-                              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: '#0a0f1e', borderRadius: 8 }}>
+                              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: '#ffffff', borderRadius: 8, border: '1px solid #f1f5f9' }}>
                                 <div>
                                   <span style={{ color: st.color, fontWeight: 700, fontSize: 15 }}>{r.value}</span>
                                   <span style={{ color: '#475569', fontSize: 12, marginLeft: 6 }}>mg/dL · {r.type.replace('_', ' ')}</span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                  <span style={{ fontSize: 11, color: '#334155' }}>{fmtFull(r.recorded_at)}</span>
-                                  <button onClick={() => deleteReading('blood_sugar', r.id)} style={{ background: 'none', border: 'none', color: '#334155', cursor: 'pointer', fontSize: 14 }}>🗑</button>
+                                  <span style={{ fontSize: 11, color: '#94a3b8' }}>{fmtFull(r.recorded_at)}</span>
+                                  <button onClick={() => deleteReading('blood_sugar', r.id)} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', fontSize: 14 }}>🗑</button>
                                 </div>
                               </div>
                             )
@@ -346,8 +346,8 @@ export default function QuickReadings({ userId }: Props) {
                     )}
 
                     {showForm && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '18px 20px', border: '1px solid #1e293b' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9', marginBottom: 14 }}>Add Reading</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '18px 20px', border: '1px solid #1e293b' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 14 }}>Add Reading</div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
                           <div><label style={s.lbl}>Value (mg/dL)</label><input style={s.inp} type="number" placeholder="95" value={sugarForm.value} onChange={e => setSugarForm(p => ({ ...p, value: e.target.value }))} /></div>
                           <div>
@@ -363,7 +363,7 @@ export default function QuickReadings({ userId }: Props) {
                         <div style={{ marginBottom: 14 }}><label style={s.lbl}>Notes (optional)</label><input style={s.inp} placeholder="Before breakfast, after walk…" value={sugarForm.notes} onChange={e => setSugarForm(p => ({ ...p, notes: e.target.value }))} /></div>
                         <div style={{ display: 'flex', gap: 8 }}>
                           <button onClick={saveReading} disabled={saving} style={{ background: 'linear-gradient(135deg,#dc2626,#db2777)', border: 'none', color: 'white', padding: '9px 20px', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>{saving ? 'Saving…' : 'Save'}</button>
-                          <button onClick={() => setShowForm(false)} style={{ background: '#1e293b', border: 'none', color: '#64748b', padding: '9px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
+                          <button onClick={() => setShowForm(false)} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#64748b', padding: '9px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
                         </div>
                       </div>
                     )}
@@ -376,16 +376,16 @@ export default function QuickReadings({ userId }: Props) {
                     {latestWeight && (() => {
                       const bmiSt = latestWeight.bmi ? getBmiStatus(latestWeight.bmi) : null
                       return (
-                        <div style={{ background: '#060810', borderRadius: 14, padding: '18px 20px', border: `1px solid ${bmiSt?.color || '#1e293b'}30` }}>
+                        <div style={{ background: '#f8fafc', borderRadius: 14, padding: '18px 20px', border: `1px solid ${bmiSt?.color || '#1e293b'}30` }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div>
-                              <div style={{ fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Latest</div>
+                              <div style={{ fontSize: 11, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>Latest</div>
                               <div style={{ fontSize: 32, fontWeight: 800, color: '#fbbf24' }}>{latestWeight.weight_kg} <span style={{ fontSize: 14, color: '#475569', fontWeight: 400 }}>kg</span></div>
                               {latestWeight.bmi && <div style={{ fontSize: 13, color: bmiSt?.color, marginTop: 4, fontWeight: 600 }}>BMI {latestWeight.bmi}</div>}
                             </div>
                             <div style={{ textAlign: 'right' }}>
                               {bmiSt && <span style={{ background: bmiSt.color + '20', color: bmiSt.color, padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 700 }}>{bmiSt.label}</span>}
-                              <div style={{ fontSize: 11, color: '#334155', marginTop: 6 }}>{fmt(latestWeight.recorded_at)}</div>
+                              <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 6 }}>{fmt(latestWeight.recorded_at)}</div>
                             </div>
                           </div>
                         </div>
@@ -393,14 +393,14 @@ export default function QuickReadings({ userId }: Props) {
                     })()}
 
                     {weightData.length > 1 && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '16px 18px' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', marginBottom: 12 }}>Weight Trend</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '16px 18px' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#64748b', marginBottom: 12 }}>Weight Trend</div>
                         <ResponsiveContainer width="100%" height={150}>
                           <LineChart data={weightData.map(r => ({ ...r, date: fmt(r.recorded_at) }))} margin={{ top: 4, right: 8, left: -28, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#0f172a" />
                             <XAxis dataKey="date" tick={{ fill: '#334155', fontSize: 10 }} />
                             <YAxis tick={{ fill: '#334155', fontSize: 10 }} domain={['auto', 'auto']} />
-                            <Tooltip contentStyle={{ background: '#0a0f1e', border: '1px solid #1e293b', borderRadius: 8, fontSize: 12 }} />
+                            <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 8, fontSize: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
                             <Line type="monotone" dataKey="weight_kg" stroke="#fbbf24" strokeWidth={2.5} dot={{ r: 3, fill: '#fbbf24', strokeWidth: 0 }} name="Weight (kg)" />
                           </LineChart>
                         </ResponsiveContainer>
@@ -408,20 +408,20 @@ export default function QuickReadings({ userId }: Props) {
                     )}
 
                     {weightData.length > 0 && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '16px 18px' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', marginBottom: 10 }}>History</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '16px 18px' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#64748b', marginBottom: 10 }}>History</div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                           {[...weightData].reverse().slice(0, 10).map(r => {
                             const bmiSt = r.bmi ? getBmiStatus(r.bmi) : null
                             return (
-                              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: '#0a0f1e', borderRadius: 8 }}>
+                              <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: '#ffffff', borderRadius: 8, border: '1px solid #f1f5f9' }}>
                                 <div>
                                   <span style={{ color: '#fbbf24', fontWeight: 700, fontSize: 15 }}>{r.weight_kg} kg</span>
                                   {r.bmi && <span style={{ color: bmiSt?.color, fontSize: 12, marginLeft: 8 }}>BMI {r.bmi}</span>}
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                  <span style={{ fontSize: 11, color: '#334155' }}>{fmtFull(r.recorded_at)}</span>
-                                  <button onClick={() => deleteReading('weight_readings', r.id)} style={{ background: 'none', border: 'none', color: '#334155', cursor: 'pointer', fontSize: 14 }}>🗑</button>
+                                  <span style={{ fontSize: 11, color: '#94a3b8' }}>{fmtFull(r.recorded_at)}</span>
+                                  <button onClick={() => deleteReading('weight_readings', r.id)} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', fontSize: 14 }}>🗑</button>
                                 </div>
                               </div>
                             )
@@ -431,8 +431,8 @@ export default function QuickReadings({ userId }: Props) {
                     )}
 
                     {showForm && (
-                      <div style={{ background: '#060810', borderRadius: 14, padding: '18px 20px', border: '1px solid #1e293b' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: '#f1f5f9', marginBottom: 14 }}>Add Reading</div>
+                      <div style={{ background: '#f8fafc', borderRadius: 14, padding: '18px 20px', border: '1px solid #1e293b' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', marginBottom: 14 }}>Add Reading</div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
                           <div><label style={s.lbl}>Weight (kg)</label><input style={s.inp} type="number" step="0.1" placeholder="70.5" value={weightForm.weight_kg} onChange={e => setWeightForm(p => ({ ...p, weight_kg: e.target.value }))} /></div>
                           <div><label style={s.lbl}>Height (cm) <span style={{ color: '#334155' }}>optional</span></label><input style={s.inp} type="number" placeholder="175" value={weightForm.height_cm} onChange={e => setWeightForm(p => ({ ...p, height_cm: e.target.value }))} /></div>
@@ -441,7 +441,7 @@ export default function QuickReadings({ userId }: Props) {
                         <div style={{ marginBottom: 14 }}><label style={s.lbl}>Notes (optional)</label><input style={s.inp} placeholder="Morning, after gym…" value={weightForm.notes} onChange={e => setWeightForm(p => ({ ...p, notes: e.target.value }))} /></div>
                         <div style={{ display: 'flex', gap: 8 }}>
                           <button onClick={saveReading} disabled={saving} style={{ background: 'linear-gradient(135deg,#dc2626,#db2777)', border: 'none', color: 'white', padding: '9px 20px', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>{saving ? 'Saving…' : 'Save'}</button>
-                          <button onClick={() => setShowForm(false)} style={{ background: '#1e293b', border: 'none', color: '#64748b', padding: '9px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
+                          <button onClick={() => setShowForm(false)} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#64748b', padding: '9px 16px', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
                         </div>
                       </div>
                     )}

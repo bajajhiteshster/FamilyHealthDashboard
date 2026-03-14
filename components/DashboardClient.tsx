@@ -103,29 +103,29 @@ export default function DashboardClient({ user, initialReports }: Props) {
   }
 
   const s = {
-    card: { background: '#0a0f1e', border: '1px solid #0f172a', borderRadius: 16 } as React.CSSProperties,
-    input: { width: '100%', background: '#060810', border: '1px solid #0f172a', borderRadius: 8, padding: '9px 12px', color: '#f1f5f9', fontSize: 14, boxSizing: 'border-box' as const },
-    label: { display: 'block', fontSize: 11, color: '#475569', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 } as React.CSSProperties,
+    card: { background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' } as React.CSSProperties,
+    input: { width: '100%', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '9px 12px', color: '#0f172a', fontSize: 14, boxSizing: 'border-box' as const },
+    label: { display: 'block', fontSize: 11, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 } as React.CSSProperties,
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#06090f', color: '#e2e8f0', fontFamily: 'Sora,Segoe UI,sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#0f172a', fontFamily: 'Sora,Segoe UI,sans-serif' }}>
       {/* Nav */}
-      <nav style={{ background: 'rgba(6,9,15,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #0a0f1e', padding: '0 16px', position: 'sticky', top: 0, zIndex: 50, width: '100%' }}>
+      <nav style={{ background: '#ffffff', borderBottom: '1px solid #e2e8f0', padding: '0 16px', position: 'sticky', top: 0, zIndex: 50, width: '100%', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60, gap: 8, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
             <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg,#dc2626,#db2777)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>🩸</div>
-            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.4px', color: '#f8fafc', whiteSpace: 'nowrap' }}>BloodTrack <span style={{ color: '#dc2626' }}>AI</span></span>
+            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.4px', color: '#0f172a', whiteSpace: 'nowrap' }}>BloodTrack <span style={{ color: '#dc2626' }}>AI</span></span>
           </div>
           <div style={{ display: 'flex', gap: 2, overflow: 'hidden' }}>
             {(['overview', 'trends', 'history'] as const).map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '6px 10px', borderRadius: 7, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, background: activeTab === tab ? '#0f172a' : 'transparent', color: activeTab === tab ? '#f8fafc' : '#475569', textTransform: 'capitalize', whiteSpace: 'nowrap' }}>{tab}</button>
+              <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '6px 10px', borderRadius: 7, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, background: activeTab === tab ? '#f1f5f9' : 'transparent', color: activeTab === tab ? '#0f172a' : '#94a3b8', textTransform: 'capitalize', whiteSpace: 'nowrap' }}>{tab}</button>
             ))}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
-            <button onClick={() => setShowManual(!showManual)} style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #1e293b', background: 'transparent', color: '#64748b', cursor: 'pointer', fontSize: 12 }}>✏️</button>
-            <button onClick={() => fileInputRef.current?.click()} style={{ padding: '6px 12px', borderRadius: 7, border: 'none', background: 'linear-gradient(135deg,#dc2626,#db2777)', color: 'white', cursor: 'pointer', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>📄 PDF</button>
-            <button onClick={signOut} style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #1e293b', background: 'transparent', color: '#475569', cursor: 'pointer', fontSize: 12 }}>↩</button>
+            <button onClick={() => setShowManual(!showManual)} style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #e2e8f0', background: '#f8fafc', color: '#64748b', cursor: 'pointer', fontSize: 12 }}>✏️</button>
+            <button onClick={() => fileInputRef.current?.click()} style={{ padding: '6px 12px', borderRadius: 7, border: 'none', background: 'linear-gradient(135deg,#dc2626,#db2777)', color: 'white', cursor: 'pointer', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap', boxShadow: '0 2px 8px rgba(220,38,38,0.3)' }}>📄 PDF</button>
+            <button onClick={signOut} style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #e2e8f0', background: '#f8fafc', color: '#64748b', cursor: 'pointer', fontSize: 12 }}>↩</button>
             <input ref={fileInputRef} type="file" accept=".pdf" multiple style={{ display: 'none' }} onChange={e => processFiles(Array.from(e.target.files || []))} />
           </div>
         </div>
@@ -138,23 +138,24 @@ export default function DashboardClient({ user, initialReports }: Props) {
           onDragOver={e => { e.preventDefault(); setDragOver(true) }} onDragLeave={() => setDragOver(false)}
           onClick={() => !reports.length && fileInputRef.current?.click()}
           style={{
-            border: `2px dashed ${dragOver ? '#dc2626' : '#0f172a'}`, borderRadius: reports.length ? 12 : 24,
+            border: `2px dashed ${dragOver ? '#dc2626' : '#e2e8f0'}`, borderRadius: reports.length ? 12 : 24,
             padding: reports.length ? '14px 20px' : '48px 24px', textAlign: 'center',
             cursor: reports.length ? 'default' : 'pointer', transition: 'all 0.2s',
-            background: dragOver ? 'rgba(220,38,38,0.04)' : 'transparent', marginBottom: 24,
+            background: dragOver ? '#fef2f2' : '#ffffff', marginBottom: 24,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
-            flexDirection: reports.length ? 'row' : 'column'
+            flexDirection: reports.length ? 'row' : 'column',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.06)'
           }}>
           {reports.length ? (
             <>
               <span style={{ fontSize: 20 }}>{uploading ? '⏳' : '📄'}</span>
-              <span style={{ color: '#334155', fontSize: 14 }}>{uploading ? 'Processing…' : 'Drop more PDF reports here'}</span>
+              <span style={{ color: '#94a3b8', fontSize: 14 }}>{uploading ? 'Processing…' : 'Drop more PDF reports here'}</span>
             </>
           ) : (
             <>
               <div style={{ fontSize: 44, marginBottom: 10 }}>🩺</div>
-              <h2 style={{ fontSize: 20, fontWeight: 800, color: '#f1f5f9', marginBottom: 8 }}>Upload Your Blood Reports</h2>
-              <p style={{ color: '#475569', fontSize: 14 }}>Drop PDF files or click to browse · Claude AI extracts all values</p>
+              <h2 style={{ fontSize: 20, fontWeight: 800, color: '#0f172a', marginBottom: 8 }}>Upload Your Blood Reports</h2>
+              <p style={{ color: '#64748b', fontSize: 14 }}>Drop PDF files or click to browse · Claude AI extracts all values</p>
             </>
           )}
         </div>
@@ -163,10 +164,10 @@ export default function DashboardClient({ user, initialReports }: Props) {
         {uploadLog.length > 0 && (
           <div style={{ ...s.card, padding: '16px 20px', marginBottom: 22 }}>
             {uploadLog.map((log, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderBottom: i < uploadLog.length - 1 ? '1px solid #060810' : 'none' }}>
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderBottom: i < uploadLog.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
                 <span>{log.status === 'success' ? '✅' : log.status === 'error' ? '❌' : '⏳'}</span>
-                <span style={{ color: '#94a3b8', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{log.name}</span>
-                <span style={{ color: log.status === 'success' ? '#22c55e' : log.status === 'error' ? '#ef4444' : '#f59e0b', fontSize: 12, whiteSpace: 'nowrap' }}>{log.msg}</span>
+                <span style={{ color: '#334155', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{log.name}</span>
+                <span style={{ color: log.status === 'success' ? '#16a34a' : log.status === 'error' ? '#dc2626' : '#d97706', fontSize: 12, whiteSpace: 'nowrap' }}>{log.msg}</span>
               </div>
             ))}
           </div>
@@ -175,7 +176,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
         {/* Manual Form */}
         {showManual && (
           <div style={{ ...s.card, padding: 26, marginBottom: 26 }}>
-            <h3 style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9', marginBottom: 18 }}>Manual Entry</h3>
+            <h3 style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', marginBottom: 18 }}>Manual Entry</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(145px, 1fr))', gap: 12 }}>
               <div>
                 <label style={s.label}>Report Month</label>
@@ -191,7 +192,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
             </div>
             <div style={{ display: 'flex', gap: 8, marginTop: 18 }}>
               <button onClick={saveManual} style={{ background: 'linear-gradient(135deg,#dc2626,#db2777)', border: 'none', color: 'white', padding: '9px 22px', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 14 }}>Save</button>
-              <button onClick={() => setShowManual(false)} style={{ background: '#0f172a', border: '1px solid #1e293b', color: '#64748b', padding: '9px 18px', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
+              <button onClick={() => setShowManual(false)} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#64748b', padding: '9px 18px', borderRadius: 8, cursor: 'pointer', fontSize: 14 }}>Cancel</button>
             </div>
           </div>
         )}
@@ -200,9 +201,9 @@ export default function DashboardClient({ user, initialReports }: Props) {
         {activeTab === 'overview' && (
           <>
             {reports.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '60px 0', color: '#334155' }}>
+              <div style={{ textAlign: 'center', padding: '60px 0', color: '#94a3b8' }}>
                 <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#475569' }}>No reports yet — upload a PDF or add manually</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#64748b' }}>No reports yet — upload a PDF or add manually</div>
               </div>
             ) : (
               <>
@@ -216,15 +217,16 @@ export default function DashboardClient({ user, initialReports }: Props) {
                 <div style={{ ...s.card, padding: '22px 20px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, flexWrap: 'wrap', gap: 10 }}>
                     <div>
-                      <h2 style={{ fontSize: 16, fontWeight: 800, color: '#f1f5f9', margin: 0 }}>{PARAMETERS[activeParam].label} Trend</h2>
-                      <p style={{ margin: '3px 0 0', color: '#475569', fontSize: 12 }}>Normal: {PARAMETERS[activeParam].normal[0]}–{PARAMETERS[activeParam].normal[1]} {PARAMETERS[activeParam].unit}</p>
+                      <h2 style={{ fontSize: 16, fontWeight: 800, color: '#0f172a', margin: 0 }}>{PARAMETERS[activeParam].label} Trend</h2>
+                      <p style={{ margin: '3px 0 0', color: '#64748b', fontSize: 12 }}>Normal: {PARAMETERS[activeParam].normal[0]}–{PARAMETERS[activeParam].normal[1]} {PARAMETERS[activeParam].unit}</p>
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                       {PARAM_KEYS.map(k => (
                         <button key={k} onClick={() => setActiveParam(k)} style={{
-                          padding: '3px 9px', borderRadius: 20, border: `1px solid ${activeParam === k ? PARAMETERS[k].color : '#0f172a'}`,
-                          background: activeParam === k ? PARAMETERS[k].color + '18' : 'transparent',
-                          color: activeParam === k ? PARAMETERS[k].color : '#334155', cursor: 'pointer', fontSize: 10
+                          padding: '3px 9px', borderRadius: 20,
+                          border: `1px solid ${activeParam === k ? PARAMETERS[k].color : '#e2e8f0'}`,
+                          background: activeParam === k ? PARAMETERS[k].color + '15' : '#f8fafc',
+                          color: activeParam === k ? PARAMETERS[k].color : '#64748b', cursor: 'pointer', fontSize: 10
                         }}>{PARAMETERS[k].label}</button>
                       ))}
                     </div>
@@ -240,12 +242,13 @@ export default function DashboardClient({ user, initialReports }: Props) {
         {activeTab === 'trends' && (
           <div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
-              <span style={{ color: '#475569', fontSize: 13, padding: '5px 0', marginRight: 4 }}>Compare:</span>
+              <span style={{ color: '#64748b', fontSize: 13, padding: '5px 0', marginRight: 4 }}>Compare:</span>
               {PARAM_KEYS.map(k => (
                 <button key={k} onClick={() => toggleParam(k)} style={{
-                  padding: '4px 11px', borderRadius: 20, border: `1px solid ${selectedParams.includes(k) ? PARAMETERS[k].color : '#0f172a'}`,
-                  background: selectedParams.includes(k) ? PARAMETERS[k].color + '18' : 'transparent',
-                  color: selectedParams.includes(k) ? PARAMETERS[k].color : '#334155', cursor: 'pointer', fontSize: 11
+                  padding: '4px 11px', borderRadius: 20,
+                  border: `1px solid ${selectedParams.includes(k) ? PARAMETERS[k].color : '#e2e8f0'}`,
+                  background: selectedParams.includes(k) ? PARAMETERS[k].color + '15' : '#ffffff',
+                  color: selectedParams.includes(k) ? PARAMETERS[k].color : '#64748b', cursor: 'pointer', fontSize: 11
                 }}>{PARAMETERS[k].label}</button>
               ))}
             </div>
@@ -259,11 +262,11 @@ export default function DashboardClient({ user, initialReports }: Props) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                       <div>
                         <div style={{ color: p.color, fontWeight: 800, fontSize: 14 }}>{p.label}</div>
-                        <div style={{ color: '#334155', fontSize: 11, marginTop: 2 }}>Normal: {p.normal[0]}–{p.normal[1]} {p.unit}</div>
+                        <div style={{ color: '#94a3b8', fontSize: 11, marginTop: 2 }}>Normal: {p.normal[0]}–{p.normal[1]} {p.unit}</div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ color: val != null ? STATUS_COLORS[status] : '#1e293b', fontSize: 22, fontWeight: 800 }}>{val ?? '—'}</div>
-                        <div style={{ fontSize: 11, color: '#334155' }}>{p.unit}</div>
+                        <div style={{ color: val != null ? STATUS_COLORS[status] : '#cbd5e1', fontSize: 22, fontWeight: 800 }}>{val ?? '—'}</div>
+                        <div style={{ fontSize: 11, color: '#94a3b8' }}>{p.unit}</div>
                       </div>
                     </div>
                     <TrendChart reports={reports} paramKey={key} height={100} mini />
@@ -277,16 +280,16 @@ export default function DashboardClient({ user, initialReports }: Props) {
         {/* HISTORY */}
         {activeTab === 'history' && (
           <div style={{ ...s.card, padding: '22px 20px' }}>
-            <h2 style={{ fontSize: 16, fontWeight: 800, color: '#f1f5f9', marginBottom: 18 }}>All Reports</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 800, color: '#0f172a', marginBottom: 18 }}>All Reports</h2>
             {reports.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '40px', color: '#334155' }}>No reports yet.</div>
+              <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>No reports yet.</div>
             ) : (
               <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid #0f172a' }}>
-                      <th style={{ textAlign: 'left', padding: '8px 10px', color: '#475569', fontWeight: 700, whiteSpace: 'nowrap' }}>Date</th>
-                      <th style={{ textAlign: 'left', padding: '8px 10px', color: '#475569', fontWeight: 700 }}>Source</th>
+                    <tr style={{ borderBottom: '2px solid #f1f5f9' }}>
+                      <th style={{ textAlign: 'left', padding: '8px 10px', color: '#64748b', fontWeight: 700, whiteSpace: 'nowrap' }}>Date</th>
+                      <th style={{ textAlign: 'left', padding: '8px 10px', color: '#64748b', fontWeight: 700 }}>Source</th>
                       {PARAM_KEYS.map(k => (
                         <th key={k} style={{ textAlign: 'center', padding: '8px 6px', color: PARAMETERS[k].color, fontWeight: 700, whiteSpace: 'nowrap', fontSize: 10 }}>{PARAMETERS[k].label}</th>
                       ))}
@@ -295,10 +298,10 @@ export default function DashboardClient({ user, initialReports }: Props) {
                   </thead>
                   <tbody>
                     {[...reports].reverse().map((r) => (
-                      <tr key={r.id} style={{ borderBottom: '1px solid #060810' }}>
-                        <td style={{ padding: '10px 10px', color: '#94a3b8', fontWeight: 700, whiteSpace: 'nowrap' }}>{r.report_date}</td>
+                      <tr key={r.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                        <td style={{ padding: '10px 10px', color: '#334155', fontWeight: 700, whiteSpace: 'nowrap' }}>{r.report_date}</td>
                         <td style={{ padding: '10px 10px' }}>
-                          <span style={{ fontSize: 10, color: r.source === 'pdf' ? '#38bdf8' : '#64748b', background: r.source === 'pdf' ? '#38bdf822' : '#1e293b', padding: '2px 6px', borderRadius: 20 }}>
+                          <span style={{ fontSize: 10, color: r.source === 'pdf' ? '#0284c7' : '#64748b', background: r.source === 'pdf' ? '#e0f2fe' : '#f1f5f9', padding: '2px 6px', borderRadius: 20 }}>
                             {r.source === 'pdf' ? '📄 PDF' : '✏️ Manual'}
                           </span>
                         </td>
@@ -309,12 +312,12 @@ export default function DashboardClient({ user, initialReports }: Props) {
                             <td key={k} style={{ textAlign: 'center', padding: '10px 6px' }}>
                               {val != null
                                 ? <span style={{ color: STATUS_COLORS[status], fontWeight: 600, background: STATUS_COLORS[status] + '18', padding: '2px 5px', borderRadius: 4, fontSize: 11 }}>{val}</span>
-                                : <span style={{ color: '#1e293b' }}>—</span>}
+                                : <span style={{ color: '#e2e8f0' }}>—</span>}
                             </td>
                           )
                         })}
                         <td style={{ padding: '10px 8px' }}>
-                          <button onClick={() => deleteReport(r.id)} style={{ background: 'transparent', border: 'none', color: '#334155', cursor: 'pointer', fontSize: 14 }}>🗑</button>
+                          <button onClick={() => deleteReport(r.id)} style={{ background: 'transparent', border: 'none', color: '#cbd5e1', cursor: 'pointer', fontSize: 14 }}>🗑</button>
                         </td>
                       </tr>
                     ))}
@@ -325,7 +328,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
           </div>
         )}
 
-        <p style={{ textAlign: 'center', color: '#1e293b', fontSize: 12, marginTop: 32, paddingBottom: 80 }}>
+        <p style={{ textAlign: 'center', color: '#cbd5e1', fontSize: 12, marginTop: 32, paddingBottom: 80 }}>
           For personal tracking only. Consult your doctor for medical advice.
         </p>
       </div>
