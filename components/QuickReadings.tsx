@@ -136,15 +136,27 @@ export default function QuickReadings({ userId }: Props) {
     <>
       {/* Floating Button */}
       <button onClick={() => setOpen(true)} style={{
-        position: 'fixed', bottom: 24, right: 24, zIndex: 9999,
-        width: 60, height: 60, borderRadius: '50%', border: 'none',
+        position: 'fixed',
+        bottom: 20,
+        right: 20,
+        zIndex: 9999,
+        width: 56,
+        height: 56,
+        borderRadius: '50%',
+        border: 'none',
         background: 'linear-gradient(135deg, #dc2626, #db2777)',
-        color: 'white', fontSize: 30, cursor: 'pointer',
-        boxShadow: '0 4px 24px rgba(220,38,38,0.6)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        WebkitTransform: 'translateZ(0)',
-        transform: 'translateZ(0)',
+        color: 'white',
+        fontSize: 28,
+        lineHeight: 1,
+        cursor: 'pointer',
+        boxShadow: '0 4px 20px rgba(220,38,38,0.6)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        WebkitTransform: 'translate3d(0,0,0)',
+        transform: 'translate3d(0,0,0)',
         willChange: 'transform',
+        touchAction: 'manipulation',
       }} title="Add Quick Reading">
         +
       </button>

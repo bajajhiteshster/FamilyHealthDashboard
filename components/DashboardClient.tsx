@@ -113,7 +113,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
   return (
     <div style={{ minHeight: '100vh', background: '#06090f', color: '#e2e8f0', fontFamily: "'Sora','Segoe UI',sans-serif", position: 'relative', isolation: 'auto' }}>
       {/* Nav */}
-      <nav style={{ background: 'rgba(6,9,15,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #0a0f1e', padding: '0 32px', position: 'sticky', top: 0, zIndex: 50 }}>
+      <nav style={{ background: 'rgba(6,9,15,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #0a0f1e', padding: '0 16px', position: 'sticky', top: 0, zIndex: 50, width: '100%' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg,#dc2626,#db2777)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>🩸</div>
@@ -124,11 +124,10 @@ export default function DashboardClient({ user, initialReports }: Props) {
               <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '6px 14px', borderRadius: 7, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, background: activeTab === tab ? '#0f172a' : 'transparent', color: activeTab === tab ? '#f8fafc' : '#475569', textTransform: 'capitalize' }}>{tab}</button>
             ))}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ color: '#334155', fontSize: 13 }}>👤 {user.name}</span>
-            <button onClick={() => setShowManual(!showManual)} style={{ padding: '6px 12px', borderRadius: 7, border: '1px solid #1e293b', background: 'transparent', color: '#64748b', cursor: 'pointer', fontSize: 12 }}>✏️ Manual</button>
-            <button onClick={() => fileInputRef.current?.click()} style={{ padding: '6px 14px', borderRadius: 7, border: 'none', background: 'linear-gradient(135deg,#dc2626,#db2777)', color: 'white', cursor: 'pointer', fontSize: 12, fontWeight: 700, boxShadow: '0 3px 12px rgba(220,38,38,0.3)' }}>📄 Upload PDF</button>
-            <button onClick={signOut} style={{ padding: '6px 12px', borderRadius: 7, border: '1px solid #1e293b', background: 'transparent', color: '#475569', cursor: 'pointer', fontSize: 12 }}>Sign Out</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+            <button onClick={() => setShowManual(!showManual)} style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #1e293b', background: 'transparent', color: '#64748b', cursor: 'pointer', fontSize: 12 }}>✏️</button>
+            <button onClick={() => fileInputRef.current?.click()} style={{ padding: '6px 12px', borderRadius: 7, border: 'none', background: 'linear-gradient(135deg,#dc2626,#db2777)', color: 'white', cursor: 'pointer', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap' }}>📄 PDF</button>
+            <button onClick={signOut} style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid #1e293b', background: 'transparent', color: '#475569', cursor: 'pointer', fontSize: 12 }}>↩</button>
             <input ref={fileInputRef} type="file" accept=".pdf" multiple style={{ display: 'none' }} onChange={e => processFiles(Array.from(e.target.files || []))} />
           </div>
         </div>
@@ -280,6 +279,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
         {activeTab === 'history' && (
           <div style={{ ...s.card, padding: '24px 28px', overflowX: 'auto' }}>
             <h2 style={{ fontSize: 17, fontWeight: 800, color: '#f1f5f9', marginBottom: 20 }}>All Reports</h2>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             {reports.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px', color: '#334155' }}>No reports yet.</div>
             ) : (
@@ -321,6 +321,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
                   ))}
                 </tbody>
               </table>
+            </div>
             )}
           </div>
         )}
