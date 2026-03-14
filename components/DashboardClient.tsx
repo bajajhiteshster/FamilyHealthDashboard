@@ -52,14 +52,12 @@ export default function DashboardClient({ user, initialReports }: Props) {
       logs.push({ name: file.name, status: 'processing', msg: 'Uploading PDF…' })
       setUploadLog([...logs])
       try {
-        // Step 1: Upload PDF to Supabase Storage (no Vercel payload limit!)
         const storagePath = `${user.id}/${Date.now()}_${file.name}`
         const { error: uploadError } = await supabase.storage
           .from('reports')
           .upload(storagePath, file, { contentType: 'application/pdf' })
         if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`)
 
-        // Step 2: Tell server to extract from storage (only tiny JSON goes through Vercel)
         logs[logs.length - 1] = { name: file.name, status: 'processing', msg: 'Extracting with Claude AI…' }
         setUploadLog([...logs])
 
@@ -104,24 +102,24 @@ export default function DashboardClient({ user, initialReports }: Props) {
     router.push('/auth')
   }
 
-  const s = { // shorthand styles
+  const s = {
     card: { background: '#0a0f1e', border: '1px solid #0f172a', borderRadius: 16 } as React.CSSProperties,
     input: { width: '100%', background: '#060810', border: '1px solid #0f172a', borderRadius: 8, padding: '9px 12px', color: '#f1f5f9', fontSize: 14, boxSizing: 'border-box' as const },
     label: { display: 'block', fontSize: 11, color: '#475569', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 } as React.CSSProperties,
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#06090f', color: '#e2e8f0', fontFamily: 'Sora,Segoe UI,sans-serif', position: 'relative', isolation: 'auto' }}>
+    <div style={{ minHeight: '100vh', background: '#06090f', color: '#e2e8f0', fontFamily: 'Sora,Segoe UI,sans-serif' }}>
       {/* Nav */}
       <nav style={{ background: 'rgba(6,9,15,0.96)', backdropFilter: 'blur(20px)', borderBottom: '1px solid #0a0f1e', padding: '0 16px', position: 'sticky', top: 0, zIndex: 50, width: '100%' }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60, gap: 8, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
             <div style={{ width: 32, height: 32, borderRadius: 8, background: 'linear-gradient(135deg,#dc2626,#db2777)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17 }}>🩸</div>
-            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.4px', color: '#f8fafc' }}>BloodTrack <span style={{ color: '#dc2626' }}>AI</span></span>
+            <span style={{ fontWeight: 800, fontSize: 18, letterSpacing: '-0.4px', color: '#f8fafc', whiteSpace: 'nowrap' }}>BloodTrack <span style={{ color: '#dc2626' }}>AI</span></span>
           </div>
-          <div style={{ display: 'flex', gap: 3 }}>
+          <div style={{ display: 'flex', gap: 2, overflow: 'hidden' }}>
             {(['overview', 'trends', 'history'] as const).map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '6px 14px', borderRadius: 7, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, background: activeTab === tab ? '#0f172a' : 'transparent', color: activeTab === tab ? '#f8fafc' : '#475569', textTransform: 'capitalize' }}>{tab}</button>
+              <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '6px 10px', borderRadius: 7, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600, background: activeTab === tab ? '#0f172a' : 'transparent', color: activeTab === tab ? '#f8fafc' : '#475569', textTransform: 'capitalize', whiteSpace: 'nowrap' }}>{tab}</button>
             ))}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
@@ -133,7 +131,7 @@ export default function DashboardClient({ user, initialReports }: Props) {
         </div>
       </nav>
 
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '28px 32px' }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '20px 16px', width: '100%', overflowX: 'hidden' }}>
 
         {/* Drop Zone */}
         <div onDrop={e => { e.preventDefault(); setDragOver(false); processFiles(Array.from(e.dataTransfer.files)) }}
@@ -141,10 +139,11 @@ export default function DashboardClient({ user, initialReports }: Props) {
           onClick={() => !reports.length && fileInputRef.current?.click()}
           style={{
             border: `2px dashed ${dragOver ? '#dc2626' : '#0f172a'}`, borderRadius: reports.length ? 12 : 24,
-            padding: reports.length ? '14px 20px' : '64px 40px', textAlign: 'center',
+            padding: reports.length ? '14px 20px' : '48px 24px', textAlign: 'center',
             cursor: reports.length ? 'default' : 'pointer', transition: 'all 0.2s',
             background: dragOver ? 'rgba(220,38,38,0.04)' : 'transparent', marginBottom: 24,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexDirection: reports.length ? 'row' : 'column'
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
+            flexDirection: reports.length ? 'row' : 'column'
           }}>
           {reports.length ? (
             <>
@@ -153,9 +152,9 @@ export default function DashboardClient({ user, initialReports }: Props) {
             </>
           ) : (
             <>
-              <div style={{ fontSize: 52, marginBottom: 12 }}>🩺</div>
-              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#f1f5f9', marginBottom: 8 }}>Upload Your Blood Reports</h2>
-              <p style={{ color: '#475569', fontSize: 14 }}>Drop PDF files or click to browse · Claude AI extracts all values automatically</p>
+              <div style={{ fontSize: 44, marginBottom: 10 }}>🩺</div>
+              <h2 style={{ fontSize: 20, fontWeight: 800, color: '#f1f5f9', marginBottom: 8 }}>Upload Your Blood Reports</h2>
+              <p style={{ color: '#475569', fontSize: 14 }}>Drop PDF files or click to browse · Claude AI extracts all values</p>
             </>
           )}
         </div>
@@ -166,8 +165,8 @@ export default function DashboardClient({ user, initialReports }: Props) {
             {uploadLog.map((log, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderBottom: i < uploadLog.length - 1 ? '1px solid #060810' : 'none' }}>
                 <span>{log.status === 'success' ? '✅' : log.status === 'error' ? '❌' : '⏳'}</span>
-                <span style={{ color: '#94a3b8', fontSize: 13, fontWeight: 600 }}>{log.name}</span>
-                <span style={{ color: log.status === 'success' ? '#22c55e' : log.status === 'error' ? '#ef4444' : '#f59e0b', fontSize: 12 }}>{log.msg}</span>
+                <span style={{ color: '#94a3b8', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{log.name}</span>
+                <span style={{ color: log.status === 'success' ? '#22c55e' : log.status === 'error' ? '#ef4444' : '#f59e0b', fontSize: 12, whiteSpace: 'nowrap' }}>{log.msg}</span>
               </div>
             ))}
           </div>
@@ -177,14 +176,14 @@ export default function DashboardClient({ user, initialReports }: Props) {
         {showManual && (
           <div style={{ ...s.card, padding: 26, marginBottom: 26 }}>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: '#f1f5f9', marginBottom: 18 }}>Manual Entry</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(155px, 1fr))', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(145px, 1fr))', gap: 12 }}>
               <div>
                 <label style={s.label}>Report Month</label>
                 <input type="month" style={s.input} value={newEntry.report_date?.slice(0, 7) || ''} onChange={e => setNewEntry((p: any) => ({ ...p, report_date: e.target.value }))} />
               </div>
               {PARAM_KEYS.map(key => (
                 <div key={key}>
-                  <label style={s.label}>{PARAMETERS[key].label} <span style={{ color: '#1e293b' }}>({PARAMETERS[key].unit})</span></label>
+                  <label style={s.label}>{PARAMETERS[key].label} ({PARAMETERS[key].unit})</label>
                   <input type="number" step="0.01" placeholder="—" style={s.input} value={newEntry[key] || ''}
                     onChange={e => setNewEntry((p: any) => ({ ...p, [key]: e.target.value ? parseFloat(e.target.value) : '' }))} />
                 </div>
@@ -207,30 +206,30 @@ export default function DashboardClient({ user, initialReports }: Props) {
               </div>
             ) : (
               <>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(185px, 1fr))', gap: 11, marginBottom: 26 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 10, marginBottom: 24 }}>
                   {PARAM_KEYS.map(key => (
                     <StatCard key={key} paramKey={key} value={latest[key]} trend={getTrend(key)}
                       isActive={activeParam === key}
                       onClick={() => { setActiveParam(key); setActiveTab('trends') }} />
                   ))}
                 </div>
-                <div style={{ ...s.card, padding: '26px 30px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+                <div style={{ ...s.card, padding: '22px 20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, flexWrap: 'wrap', gap: 10 }}>
                     <div>
-                      <h2 style={{ fontSize: 17, fontWeight: 800, color: '#f1f5f9', margin: 0 }}>{PARAMETERS[activeParam].label} Trend</h2>
+                      <h2 style={{ fontSize: 16, fontWeight: 800, color: '#f1f5f9', margin: 0 }}>{PARAMETERS[activeParam].label} Trend</h2>
                       <p style={{ margin: '3px 0 0', color: '#475569', fontSize: 12 }}>Normal: {PARAMETERS[activeParam].normal[0]}–{PARAMETERS[activeParam].normal[1]} {PARAMETERS[activeParam].unit}</p>
                     </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                       {PARAM_KEYS.map(k => (
                         <button key={k} onClick={() => setActiveParam(k)} style={{
-                          padding: '3px 10px', borderRadius: 20, border: `1px solid ${activeParam === k ? PARAMETERS[k].color : '#0f172a'}`,
+                          padding: '3px 9px', borderRadius: 20, border: `1px solid ${activeParam === k ? PARAMETERS[k].color : '#0f172a'}`,
                           background: activeParam === k ? PARAMETERS[k].color + '18' : 'transparent',
-                          color: activeParam === k ? PARAMETERS[k].color : '#334155', cursor: 'pointer', fontSize: 11
+                          color: activeParam === k ? PARAMETERS[k].color : '#334155', cursor: 'pointer', fontSize: 10
                         }}>{PARAMETERS[k].label}</button>
                       ))}
                     </div>
                   </div>
-                  <TrendChart reports={reports} paramKey={activeParam} height={240} />
+                  <TrendChart reports={reports} paramKey={activeParam} height={220} />
                 </div>
               </>
             )}
@@ -240,24 +239,24 @@ export default function DashboardClient({ user, initialReports }: Props) {
         {/* TRENDS */}
         {activeTab === 'trends' && (
           <div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 22 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
               <span style={{ color: '#475569', fontSize: 13, padding: '5px 0', marginRight: 4 }}>Compare:</span>
               {PARAM_KEYS.map(k => (
                 <button key={k} onClick={() => toggleParam(k)} style={{
-                  padding: '4px 12px', borderRadius: 20, border: `1px solid ${selectedParams.includes(k) ? PARAMETERS[k].color : '#0f172a'}`,
+                  padding: '4px 11px', borderRadius: 20, border: `1px solid ${selectedParams.includes(k) ? PARAMETERS[k].color : '#0f172a'}`,
                   background: selectedParams.includes(k) ? PARAMETERS[k].color + '18' : 'transparent',
-                  color: selectedParams.includes(k) ? PARAMETERS[k].color : '#334155', cursor: 'pointer', fontSize: 12
+                  color: selectedParams.includes(k) ? PARAMETERS[k].color : '#334155', cursor: 'pointer', fontSize: 11
                 }}>{PARAMETERS[k].label}</button>
               ))}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
               {selectedParams.map(key => {
                 const p = PARAMETERS[key]
                 const val = latest[key]
                 const status = getStatus(key, val)
                 return (
-                  <div key={key} style={{ ...s.card, padding: '20px 22px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <div key={key} style={{ ...s.card, padding: '18px 20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
                       <div>
                         <div style={{ color: p.color, fontWeight: 800, fontSize: 14 }}>{p.label}</div>
                         <div style={{ color: '#334155', fontSize: 11, marginTop: 2 }}>Normal: {p.normal[0]}–{p.normal[1]} {p.unit}</div>
@@ -277,56 +276,56 @@ export default function DashboardClient({ user, initialReports }: Props) {
 
         {/* HISTORY */}
         {activeTab === 'history' && (
-          <div style={{ ...s.card, padding: '24px 28px', overflowX: 'auto' }}>
-            <h2 style={{ fontSize: 17, fontWeight: 800, color: '#f1f5f9', marginBottom: 20 }}>All Reports</h2>
-            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <div style={{ ...s.card, padding: '22px 20px' }}>
+            <h2 style={{ fontSize: 16, fontWeight: 800, color: '#f1f5f9', marginBottom: 18 }}>All Reports</h2>
             {reports.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px', color: '#334155' }}>No reports yet.</div>
             ) : (
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #0f172a' }}>
-                    <th style={{ textAlign: 'left', padding: '9px 12px', color: '#475569', fontWeight: 700, whiteSpace: 'nowrap' }}>Date</th>
-                    <th style={{ textAlign: 'left', padding: '9px 12px', color: '#475569', fontWeight: 700 }}>Source</th>
-                    {PARAM_KEYS.map(k => (
-                      <th key={k} style={{ textAlign: 'center', padding: '9px 8px', color: PARAMETERS[k].color, fontWeight: 700, whiteSpace: 'nowrap', fontSize: 11 }}>{PARAMETERS[k].label}</th>
-                    ))}
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {[...reports].reverse().map((r) => (
-                    <tr key={r.id} style={{ borderBottom: '1px solid #060810' }}>
-                      <td style={{ padding: '11px 12px', color: '#94a3b8', fontWeight: 700, whiteSpace: 'nowrap' }}>{r.report_date}</td>
-                      <td style={{ padding: '11px 12px' }}>
-                        <span style={{ fontSize: 11, color: r.source === 'pdf' ? '#38bdf8' : '#64748b', background: r.source === 'pdf' ? '#38bdf822' : '#1e293b', padding: '2px 8px', borderRadius: 20 }}>
-                          {r.source === 'pdf' ? `📄 ${r.filename || 'PDF'}` : '✏️ Manual'}
-                        </span>
-                      </td>
-                      {PARAM_KEYS.map(k => {
-                        const val = r[k]
-                        const status = getStatus(k, val)
-                        return (
-                          <td key={k} style={{ textAlign: 'center', padding: '11px 8px' }}>
-                            {val != null
-                              ? <span style={{ color: STATUS_COLORS[status], fontWeight: 600, background: STATUS_COLORS[status] + '18', padding: '2px 7px', borderRadius: 5, fontSize: 12 }}>{val}</span>
-                              : <span style={{ color: '#1e293b' }}>—</span>}
-                          </td>
-                        )
-                      })}
-                      <td style={{ padding: '11px 12px' }}>
-                        <button onClick={() => deleteReport(r.id)} style={{ background: 'transparent', border: 'none', color: '#334155', cursor: 'pointer', fontSize: 15 }}>🗑</button>
-                      </td>
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #0f172a' }}>
+                      <th style={{ textAlign: 'left', padding: '8px 10px', color: '#475569', fontWeight: 700, whiteSpace: 'nowrap' }}>Date</th>
+                      <th style={{ textAlign: 'left', padding: '8px 10px', color: '#475569', fontWeight: 700 }}>Source</th>
+                      {PARAM_KEYS.map(k => (
+                        <th key={k} style={{ textAlign: 'center', padding: '8px 6px', color: PARAMETERS[k].color, fontWeight: 700, whiteSpace: 'nowrap', fontSize: 10 }}>{PARAMETERS[k].label}</th>
+                      ))}
+                      <th />
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {[...reports].reverse().map((r) => (
+                      <tr key={r.id} style={{ borderBottom: '1px solid #060810' }}>
+                        <td style={{ padding: '10px 10px', color: '#94a3b8', fontWeight: 700, whiteSpace: 'nowrap' }}>{r.report_date}</td>
+                        <td style={{ padding: '10px 10px' }}>
+                          <span style={{ fontSize: 10, color: r.source === 'pdf' ? '#38bdf8' : '#64748b', background: r.source === 'pdf' ? '#38bdf822' : '#1e293b', padding: '2px 6px', borderRadius: 20 }}>
+                            {r.source === 'pdf' ? '📄 PDF' : '✏️ Manual'}
+                          </span>
+                        </td>
+                        {PARAM_KEYS.map(k => {
+                          const val = r[k]
+                          const status = getStatus(k, val)
+                          return (
+                            <td key={k} style={{ textAlign: 'center', padding: '10px 6px' }}>
+                              {val != null
+                                ? <span style={{ color: STATUS_COLORS[status], fontWeight: 600, background: STATUS_COLORS[status] + '18', padding: '2px 5px', borderRadius: 4, fontSize: 11 }}>{val}</span>
+                                : <span style={{ color: '#1e293b' }}>—</span>}
+                            </td>
+                          )
+                        })}
+                        <td style={{ padding: '10px 8px' }}>
+                          <button onClick={() => deleteReport(r.id)} style={{ background: 'transparent', border: 'none', color: '#334155', cursor: 'pointer', fontSize: 14 }}>🗑</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}
 
-        <p style={{ textAlign: 'center', color: '#1e293b', fontSize: 12, marginTop: 32, paddingBottom: 28 }}>
+        <p style={{ textAlign: 'center', color: '#1e293b', fontSize: 12, marginTop: 32, paddingBottom: 80 }}>
           For personal tracking only. Consult your doctor for medical advice.
         </p>
       </div>
