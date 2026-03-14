@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { PARAMETERS, getStatus, STATUS_COLORS, STATUS_LABELS, type ParamKey, type Report } from '@/lib/params'
 import TrendChart from './TrendChart'
 import StatCard from './StatCard'
+import QuickReadings from './QuickReadings'
 
 type Props = {
   user: { id: string; email: string; name: string }
