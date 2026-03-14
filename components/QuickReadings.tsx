@@ -136,7 +136,7 @@ export default function QuickReadings({ userId }: Props) {
     <>
       {/* Floating Button */}
       <button onClick={() => setOpen(true)} style={{
-        position: 'fixed', bottom: 28, right: 28, zIndex: 100,
+        position: 'fixed', bottom: 'max(28px, env(safe-area-inset-bottom, 28px))', right: 24, zIndex: 100,
         width: 56, height: 56, borderRadius: '50%', border: 'none',
         background: 'linear-gradient(135deg, #dc2626, #db2777)',
         color: 'white', fontSize: 26, cursor: 'pointer',
@@ -149,12 +149,12 @@ export default function QuickReadings({ userId }: Props) {
 
       {/* Drawer Overlay */}
       {open && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end' }}>
           {/* Backdrop */}
           <div onClick={() => { setOpen(false); setShowForm(false) }} style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }} />
 
           {/* Drawer */}
-          <div style={{ position: 'relative', width: '100%', maxWidth: 520, background: '#0a0f1e', borderLeft: '1px solid #1e293b', overflowY: 'auto', padding: 28, display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ position: 'relative', width: '100%', maxWidth: 520, minHeight: '60vh', maxHeight: '100vh', background: '#0a0f1e', borderLeft: '1px solid #1e293b', borderTop: '1px solid #1e293b', borderRadius: '16px 0 0 0', overflowY: 'auto', padding: '20px 20px 40px', display: 'flex', flexDirection: 'column', gap: 18 }}>
 
             {/* Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
